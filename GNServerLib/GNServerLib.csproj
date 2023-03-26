@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A106426B-87A5-47BA-BC62-77450B557E77}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>GNServerLib</RootNamespace>
+    <AssemblyName>GNServerLib</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Room\RoomMessage\RoomMessage.cs" />
+    <Compile Include="Room\RoomStates.cs" />
+    <Compile Include="Room\RoomWork.cs" />
+    <Compile Include="Utils\YieldConditions.cs" />
+    <Compile Include="SubManager.cs" />
+    <Compile Include="Match\MatchManager.cs" />
+    <Compile Include="Room\RoomInfo\RoomInfo.cs" />
+    <Compile Include="Room\RoomInfo\RoomInfoHandlers.cs" />
+    <Compile Include="Room\RoomInstance\RoomHandlers.cs" />
+    <Compile Include="Room\RoomInstance\RoomStateHandler.cs" />
+    <Compile Include="Room\RoomProcess.cs" />
+    <Compile Include="User\UserInfo\UserInfoHandlers.cs" />
+    <Compile Include="User\UserConnection\UserHandlers.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GameManager.cs" />
+    <Compile Include="Room\RoomInstance\RoomInstance.cs" />
+    <Compile Include="Room\RoomManager.cs" />
+    <Compile Include="Room\RoomMessage\RMs.cs" />
+    <Compile Include="Server.cs" />
+    <Compile Include="ServerLauncher.cs" />
+    <Compile Include="User\UserConnection\UserConnection.cs" />
+    <Compile Include="User\UserInfo\UserInfo.cs" />
+    <Compile Include="User\UserConnection\UserSocket.cs" />
+    <Compile Include="User\UserManager.cs" />
+    <Compile Include="User\UserProcess.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=2.0.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.15\lib\net45\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GNPacketLib\GNPacketLib.csproj">
+      <Project>{9eda86a8-085f-42e6-bf8f-c890bfd0ff34}</Project>
+      <Name>GNPacketLib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
