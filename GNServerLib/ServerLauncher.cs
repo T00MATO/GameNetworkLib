@@ -8,14 +8,12 @@
         public ServerLauncher(ushort port)
         {
             _gameManager = new GameManager();
-
             _server = new Server(port, _gameManager);
         }
 
         public void Start()
         {
             _server.StartAcceptSocket();
-
             _gameManager.Run();
         }
     }
