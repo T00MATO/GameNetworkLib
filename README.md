@@ -2,7 +2,7 @@
 
 게임 개발용 라이브러리입니다.
 
-해당 라이브러리를 활용하여 만든 라이브러리는 __[GameNetworkApplication](https://github.com/T00MATO/GameNetworkApplication)__ 를 참고해주세요.
+해당 라이브러리를 활용하여 만든 클라이언트 어플리케이션은 __[GameNetworkApplication](https://github.com/T00MATO/GameNetworkApplication)__ 를 참고해주세요.
 
 # [GNCore](https://github.com/T00MATO/GameNetworkLib/tree/master/GNCore)
 
