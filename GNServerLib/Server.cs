@@ -15,8 +15,6 @@ namespace GNServerLib
 
         private Socket _socket;
 
-        private List<UserSocket> _userSockets;
-
         public Server(ushort port, GameManager gameManager)
         {
             _gameManager = gameManager;
@@ -27,8 +25,6 @@ namespace GNServerLib
             var endPoint = new IPEndPoint(address, port);
             _socket.Bind(endPoint);
             _socket.Listen((int)SocketOptionName.MaxConnections);
-
-            _userSockets = new List<UserSocket>();
 
             _logger.Info("Successfully initialized.");
         }
@@ -54,10 +50,8 @@ namespace GNServerLib
             try
             {
                 var connSocket = _socket.EndAccept(result);
-                var uSocket = new UserSocket(connSocket);
-                _userSockets.Add(uSocket);
-
-                _gameManager.UserManager.CreateConnection(uSocket);
+                var userSocket = new UserSocket(connSocket);
+                _gameManager.UserManager.CreateConnection(userSocket);
             }
             catch (Exception exception)
             {
