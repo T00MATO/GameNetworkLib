@@ -55,7 +55,7 @@ namespace GNClientLib
             {
                 _packetQueue.Enqueue(packet);
 
-                Debug.Log($"Packet Received: [{packet}]");
+                Debug.Log($"<color=#00FF00>Packet Received:</color> <color=#FFFFFF>[{packet.GetType().Name}]</color>");
             }
         }
 
@@ -65,7 +65,7 @@ namespace GNClientLib
             {
                 _socket.SendData(packet.ToBytes());
 
-                Debug.Log($"Packet Sended: [{packet}]");
+                Debug.Log($"<color=#FFA500>Packet Sended:</color> <color=#FFFFFF>[{packet.GetType().Name}]</color>");
             }
         }
 
