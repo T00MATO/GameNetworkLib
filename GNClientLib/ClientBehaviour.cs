@@ -65,7 +65,7 @@ namespace GNClientLib
             {
                 _socket.SendData(packet.ToBytes());
 
-                Debug.Log($"<color=#FFA500>Packet Sended:</color> <color=#FFFFFF>[{packet.GetType().Name}]</color>");
+                Debug.Log($"<color=#FFFF00>Packet Sended:</color> <color=#FFFFFF>[{packet.GetType().Name}]</color>");
             }
         }
 
