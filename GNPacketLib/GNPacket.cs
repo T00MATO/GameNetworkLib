@@ -13,7 +13,7 @@ namespace GNPacketLib
 
         public static readonly BinaryFormatter _binaryFormatter = new BinaryFormatter();
 
-        public static void CheckDatabytes(int bytesLength, SocketError error)
+        public static void CheckDataBytes(int bytesLength, SocketError error)
         {
             if (bytesLength == 0 || error != SocketError.Success)
                 throw new SocketException();

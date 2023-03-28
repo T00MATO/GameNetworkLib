@@ -40,7 +40,7 @@ namespace GNServerLib.User
             {
                 var dataBytes = _socket.EndReceive(result, out var error);
 
-                GNPacket.CheckDatabytes(dataBytes, error);
+                GNPacket.CheckDataBytes(dataBytes, error);
 
                 var packet = GNPacket.FromBytes(_recvBuffer, dataBytes);
 
@@ -72,7 +72,7 @@ namespace GNServerLib.User
             {
                 var dataBytes = _socket.EndSend(result, out var error);
 
-                GNPacket.CheckDatabytes(dataBytes, error);
+                GNPacket.CheckDataBytes(dataBytes, error);
             }
             catch (Exception exception)
             {
