@@ -2,12 +2,12 @@
 
 namespace GNServerLib
 {
-    internal interface IYieldCondition
+    internal interface IRMCondition
     {
         bool IsFinished();
     }
 
-    internal class WaitForSeconds : IYieldCondition
+    internal class WaitForSeconds : IRMCondition
     {
         private DateTime _start;
         private TimeSpan _duration;
@@ -21,7 +21,7 @@ namespace GNServerLib
         }
     }
 
-    internal class WaitUntil : IYieldCondition
+    internal class WaitUntil : IRMCondition
     {
         private Func<bool> _func;
 

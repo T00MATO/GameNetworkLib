@@ -147,7 +147,7 @@ namespace GNServerLib.Room
         {
             if (work.Room.Info.RoomState != RoomStates.Destroyed)
             {
-                if (work.Subroutine.Current is IYieldCondition condition && !condition.IsFinished())
+                if (work.Subroutine.Current is IRMCondition condition && !condition.IsFinished())
                     return false;
                 
                 if (work.Subroutine.MoveNext() && work.Subroutine.Current != null)
