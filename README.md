@@ -279,7 +279,7 @@ UserConnection의 **SendPacket** 메서드를 통해 연결된 클라이언트�
 
 ## [MatchManager](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Match/MatchManager.cs)
 
-```
+```csharp
 //  UserHandler.cs -> line: 41
 
 private void OnMatch(GNP_Match p)
@@ -316,7 +316,77 @@ private void OnMatch(GNP_Match p)
 
     SendPacket(result);
 }
+
+//  MatchManager.cs -> line: 23
+
+public void AddConnection(UserConnection conn)
+{
+    lock (_connections)
+        _connections.Add(conn);
+}
+
+public void RemoveConnection(ulong uid)
+{
+    lock (_connections)
+    {
+        foreach (var conn in _connections)
+        {
+            if (conn.Uid == uid)
+            {
+                _connections.Remove(conn);
+                return;
+            }
+        }
+    }
+}
 ```
 
 [UserHandler](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/User/UserConnection/UserHandlers.cs)의 **OnMatch** 메서드는 
-클라이언트로부터 GNP_Match 패킷([GNPacket](https://github.com/T00MATO/GameNetworkLib/blob/master/GNPacketLib/GNPacket.cs))을 받아 처리하는 메서드입니다.
+클라이언트로부터 **GNP_Match** 패킷([GNPacket](https://github.com/T00MATO/GameNetworkLib/blob/master/GNPacketLib/GNPacket.cs))을 받아 처리하는 메서드입니다.
+
+GNP_Match 패킷의 Request가 GNP_Match.REQUESTS.START일 경우(매치를 시작할 경우), 
+
+MatchManager에 해당 유저의 UserConnection을 매치메이킹 대기 리스트에 추가합니다.
+
+Request가 GNP_Match.REQUESTS.CANCEL일 경우(매치를 취소할 경우), 
+
+MatchManager에서 해당 유저의 UserConnection을 매치메이킹 대기 리스트에서 제거합니다.
+
+GNP_Match.REQUESTS.SUCCESS의 경우는 클라이언트가 아닌 MatchManager에서 다음과 같은 경우에 UserConnection이 패킷을 받습니다.
+
+```csharp
+//  MatchManager.cs -> line: 44
+
+public void HandleMatch()
+{
+    try
+    {
+        lock (_connections)
+        {
+            if (_connections.Count > 1)
+                MatchConnections();
+        }
+    }
+    catch (Exception exception)
+    {
+        _logger.Error(exception);
+    }
+}
+
+private void MatchConnections()
+{
+    var res = new GNP_Match(GNP_Match.REQUESTS.SUCCESS);
+
+    var conns = new Dictionary<ulong, UserConnection>();
+    for (var idx = 0; idx < RoomInfo.MAX_USER; idx++)
+    {
+        var conn = _connections[0];
+        conn.EnqueuePacket(res);
+
+        _connections.Remove(conn);
+        conns.Add(conn.Uid, conn);
+    }
+
+    roomManager.CreateRoom(conns);
+}
+```
