@@ -515,5 +515,86 @@ RoomInstance의 처리 메서드([SubRoutine](https://ko.wikipedia.org/wiki/%ED%
 생성한 RoomWork는 [로드밸런싱](https://ko.wikipedia.org/wiki/%EB%B6%80%ED%95%98%EB%B6%84%EC%82%B0)된 후, 방 메세지 작업 풀(Work Pool)에 추가됩니다.
 
 ```csharp
+//  RoomManager.cs -> line: 22
 
+public RoomManager(GameManager gameManager) : base(gameManager)
+{
+    _rooms = new List<RoomInstance>();
+
+    _procQueue = new Queue<RoomProccess>();
+    _workPools = new List<List<RoomWork>>();
+    _workers = new List<Thread>();
+    for (var idx = 0; idx < MAX_THREADS; idx++)
+    {
+        _workPools.Add(new List<RoomWork>());
+
+        var threadIdx = idx;
+        var thread = new Thread(() => HandleWork(threadIdx));
+        _workers.Add(thread);
+    }
+
+    _logger.Info("Successfully initialized.");
+}
+
+//  RoomManager.cs -> line: 111
+
+public void RunWorkers()
+{
+    foreach (var thread in _workers)
+        thread.Start();
+}
+
+private void HandleWork(int threadIdx)
+{
+    while (true)
+    {
+        lock (_workPools[threadIdx])
+        {
+            for (var idx = 0; idx < _workPools[threadIdx].Count;)
+            {
+                var work = _workPools[threadIdx][idx];
+
+                try
+                {
+                    if (!IsWorkDone(work))
+                    {
+                        idx++;
+                        continue;
+                    }
+                }
+                catch (Exception exception)
+                {
+                    _logger.Error(exception);
+                }
+
+                _workPools[threadIdx].Remove(work);
+            }
+        }
+    }
+}
+
+private bool IsWorkDone(RoomWork work)
+{
+    if (work.Room.Info.RoomState != RoomStates.Destroyed)
+    {
+        if (work.Subroutine.Current is IRMCondition condition && !condition.IsFinished())
+            return false;
+
+        if (work.Subroutine.MoveNext() && work.Subroutine.Current != null)
+            return false;
+    }
+
+    return true;
+}
 ```
+
+RoomManager의 작업 풀(Work Pool)은 총 4개가 존재하고 그 작업 풀들 각각 처리하는 4개의 워커 스레드(Worker Thread)들이 있습니다.
+
+RoomManager의 워커 스레드들은 GameManager가 **RunWorkers** 메서드를 호출하여 스레드들의 메세지 처리 업무(**HandleWork** 메서드)를 진행합니다.
+
+각각 워커 스레드에 할당되어 있는 워커(Worker)들은 해당 작업 풀에 있는 모든 서브루틴(메세지 처리 메서드)의 진행도를 확인합니다.
+
+서브루틴의 진행이 완료되었다면 해당 메세지 처리 작업을 작업 풀에서 제거하며합니다.
+
+완료하지 못했을 경우 [IRMCondition](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Room/RoomMessage/RMConditions.cs)의 
+조건에 따라 서브루틴은 대기합니다.
