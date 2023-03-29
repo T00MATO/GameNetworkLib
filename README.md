@@ -456,8 +456,8 @@ public void EnqueueProc(RoomInstance room, RoomMessage message)
 
 보내진 방 메세지는 RoomManager의 프로세스 대기 큐(Process Queue)에 추가됩니다.
 
-```
-//  RoomInstance.cs -> line: 65
+```csharp
+//  RoomManager.cs -> line: 65
 
 public void HandleMessage()
 {
@@ -479,6 +479,41 @@ public void HandleMessage()
         _logger.Error(exception);
     }
 }
+
+//  RoomInstance.cs -> line: 41
+
+public IEnumerator HandleMessage(RoomMessage message)
+{
+    if (message is RM_Create create)
+        return OnCreate(create);
+
+    if (Info.RoomState == RoomStates.Creating)
+        throw new Exception("Can not handle a message while room is creating.");
+
+    switch (message)
+    {
+        case RM_Destroy m:
+            return OnDestroy(m);
+        case RM_UserJoin m:
+            return OnUserJoin(m);
+        case RM_UserExit m:
+            return OnUserExit(m);
+        case RM_UpdateStatus m:
+            return OnStatement(m);
+        default:
+            throw new Exception($"Can not handle a message! : {message}");
+    }
+}
 ```
 
-RoomManager의 프로세스 대기 큐는 메인 스레드에서 GameManager가 **HandleMessage** 메서드를 호출하여 메세지를 하나씩 처리하며,
+RoomManager의 프로세스 대기 큐는 메인 스레드에서 GameManager가 **HandleMessage** 메서드를 호출하여 메세지를 하나씩 처리합니다.
+
+프로세스([RoomProcess](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Room/RoomProcess.cs))는 
+RoomInstance의 처리 메서드([SubRoutine](https://ko.wikipedia.org/wiki/%ED%95%A8%EC%88%98_(%EC%BB%B4%ED%93%A8%ED%84%B0_%EA%B3%BC%ED%95%99)))를 받아와 
+[RoomWork](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Room/RoomWork.cs)(방 처리 작업) 생성합니다.
+
+생성한 RoomWork는 [로드밸런싱](https://ko.wikipedia.org/wiki/%EB%B6%80%ED%95%98%EB%B6%84%EC%82%B0)된 후, 방 메세지 작업 풀(Work Pool)에 추가됩니다.
+
+```csharp
+
+```
