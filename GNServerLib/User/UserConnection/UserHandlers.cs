@@ -58,7 +58,6 @@ namespace GNServerLib.User
                 break;
                 case GNP_Match.REQUESTS.SUCCESS:
                 {
-                    Info.CancelMatch();
                     _logger.Info($"{Info.Username} has been succeed match making.");
                 }
                 break;
