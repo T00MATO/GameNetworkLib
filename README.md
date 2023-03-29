@@ -400,4 +400,28 @@ UserConnection 대기 리스트는 메인 스레드에서 GameManager가 **Handl
 ## [RoomManager](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Room/RoomManager.cs)
 
 ```csharp
+//  RoomManager.cs -> line: 58
+
+public void CreateRoom(Dictionary<ulong, UserConnection> conns)
+{
+    lock (_rooms)
+    {
+        var room = new RoomInstance(conns, gameManager, _roomIdSeq++);
+        _rooms.Add(room);
+    }
+}
+
+//  RoomInstance.cs -> line: 24
+
+public RoomInstance(Dictionary<ulong, UserConnection> conns, GameManager gameManager, ulong roomId)
+{
+    _gameManager = gameManager;
+
+    RoomId = roomId;
+    RoomIdTag = roomId.ToString("D8");
+
+    Info = RoomInfo.Create(conns);
+
+    EnqueueMessage(new RM_Create());
+}
 ```
