@@ -90,18 +90,18 @@ namespace GNServerLib.Room
 
         public void BeginHandleState()
         {
-            if (HandlingState)
+            if (HandlingStatement)
                 throw new Exception("Statement handling is already begun.");
 
-            HandlingState = true;
+            HandlingStatement = true;
         }
 
         public void EndHandleState()
         {
-            if (!HandlingState)
+            if (!HandlingStatement)
                 throw new Exception("Statement handling is already ended.");
 
-            HandlingState = false;
+            HandlingStatement = false;
         }
 
         public void SetGameState(GameStates state)

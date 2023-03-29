@@ -11,7 +11,7 @@ namespace GNServerLib.Room
 
         public RoomStates RoomState { get; private set; }
         public GameStates GameState { get; private set; }
-        public bool HandlingState { get; private set; }
+        public bool HandlingStatement { get; private set; }
 
         public static RoomInfo Create(Dictionary<ulong, UserConnection> conns)
         {
@@ -20,7 +20,7 @@ namespace GNServerLib.Room
                 _connections = conns,
                 RoomState = RoomStates.Creating,
                 GameState = GameStates.None,
-                HandlingState = false,
+                HandlingStatement = false,
             };
         }
     }
