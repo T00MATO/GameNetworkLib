@@ -344,15 +344,15 @@ public void RemoveConnection(ulong uid)
 [UserHandler](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/User/UserConnection/UserHandlers.cs)의 **OnMatch** 메서드는 
 클라이언트로부터 **GNP_Match** 패킷([GNPacket](https://github.com/T00MATO/GameNetworkLib/blob/master/GNPacketLib/GNPacket.cs))을 받아 처리하는 메서드입니다.
 
-GNP_Match 패킷의 Request가 GNP_Match.REQUESTS.START일 경우(매치를 시작할 경우), 
+각각 GNP_Match 패킷의 Request에 따라 다음과 같이 처리합니다.
 
-MatchManager에 해당 유저의 UserConnection을 매치메이킹 대기 리스트에 추가합니다.
+- **GNP_Match.REQUESTS.START(매치 시작 시):** 해당 유저의 UserConnection을 MatchManager의 대기 리스트에 추가합니다.
 
-Request가 GNP_Match.REQUESTS.CANCEL일 경우(매치를 취소할 경우), 
+- **GNP_Match.REQUESTS.CANCEL(매치 취소 시):** 해당 유저의 UserConnection을 MatchManager의 대기 리스트에서 제거합니다.
 
-MatchManager에서 해당 유저의 UserConnection을 매치메이킹 대기 리스트에서 제거합니다.
+**GNP_Match.REQUESTS.SUCCESS(매치 성공 시)** 패킷은 클라이언트가 아닌 MatchManager 측에서 UserConnection에게 알립니다.
 
-GNP_Match.REQUESTS.SUCCESS의 경우는 클라이언트가 아닌 MatchManager에서 다음과 같은 경우에 UserConnection이 패킷을 받습니다.
+각각의 Request에 따라 패킷을 처리한 후, GNP_MatchRes 패킷을 클라이언트에게 보내 처리하도록 합니다.
 
 ```csharp
 //  MatchManager.cs -> line: 44
@@ -390,3 +390,5 @@ private void MatchConnections()
     roomManager.CreateRoom(conns);
 }
 ```
+
+
