@@ -515,6 +515,10 @@ RoomInstance의 처리 메서드([SubRoutine](https://ko.wikipedia.org/wiki/%ED%
 생성한 RoomWork는 [로드밸런싱](https://ko.wikipedia.org/wiki/%EB%B6%80%ED%95%98%EB%B6%84%EC%82%B0)된 후, 방 메세지 작업 풀(Work Pool)에 추가됩니다.
 
 ```csharp
+//  RoomManager.cs -> line: 11
+
+private static readonly int MAX_THREADS = 4;
+
 //  RoomManager.cs -> line: 22
 
 public RoomManager(GameManager gameManager) : base(gameManager)
