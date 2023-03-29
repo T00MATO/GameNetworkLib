@@ -425,3 +425,11 @@ public RoomInstance(Dictionary<ulong, UserConnection> conns, GameManager gameMan
     EnqueueMessage(new RM_Create());
 }
 ```
+
+UserManager는 [MatchManager](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Match/MatchManager.cs)에서 매치메이킹에 성공한 유저들 받아와
+[RoomInstance](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Room/RoomInstance/RoomInstance.cs) 객체를 생성합니다.
+
+그 후, 생성된 RoomInstance는 RoomManager의 방 목록에 추가됩니다.
+
+RoomInstance는 생성될 때 RoomManager에게 
+**RM_Create(방 생성)** 메세지([RoomMessage](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Room/RoomMessage/RoomMessage.cs))를 보냅니다.
