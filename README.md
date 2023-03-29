@@ -9,6 +9,8 @@
 **GNServerLib** 의 [ServerLauncher](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/ServerLauncher.cs)를 구동시키는 솔루션입니다.
 
 ```csharp
+//  Program.cs -> line: 0
+
 using GNServerLib;
 
 public class Program
@@ -34,7 +36,7 @@ public class Program
 ## [Server](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Server.cs)
 
 ```csharp
-//  Server.cs
+//  Server.cs -> line: 41
 
 public void StartAcceptSocket()
 {
@@ -70,7 +72,7 @@ private void OnAcceptedSocket(IAsyncResult result)
 하위 Manager들을 생성하며, Manager들 사이를 연결해주는 [싱글톤](https://ko.wikipedia.org/wiki/%EC%8B%B1%EA%B8%80%ED%84%B4_%ED%8C%A8%ED%84%B4) 객체입니다.
 
 ```csharp
-//  GameManager.cs
+//  GameManager.cs -> line: 23
 
 public void Run()
 {
@@ -90,14 +92,19 @@ private void RunMainThread()
 }
 ```
 
-[RoomManager](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Room/RoomManager.cs)의 방 메세지 처리 작업는 별도의 워크 스레드(Work Thread)에서 처리하며,
+[RoomManager](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Room/RoomManager.cs)의 
+[RoomMessage](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Room/RoomMessage/RoomMessage.cs) 처리 작업(Work)은 
+별도의 워크 스레드(Work Thread)에서 처리하며,
 
 그 외의 작업들은 메인 스레드(Main Thread)에서 GameManager의 하위 Manager들이 처리합니다.
 
 ## [UserManager](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/User/UserManager.cs)
 
+UserManager가 관리하는 [UserSocket](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/User/UserConnection/UserSocket.cs)객체는 
+Server로부터 클라이언트 소켓을 받아 생성됩니다.
+
 ```csharp
-//  UserSocket.cs
+//  UserSocket.cs -> line: 17
 
 public UserSocket(Socket socket)
 {
@@ -108,12 +115,10 @@ public UserSocket(Socket socket)
 }
 ```
 
-Server로부터 클라이언트 소켓을 받아 [UserSocket](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/User/UserConnection/UserSocket.cs)객체가 생성됩니다.
-
-이렇게 생성된 UserSocekt객체는 [UserManager](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/User/UserManager.cs)에 추가되어 관리됩니다.
+UserSocekt객체는 생성될때부터 패킷받기를 시작합니다.
 
 ```csharp
-//  UserSocket.cs
+//  UserSocket.cs -> line: 37
 
 private void OnReceivedData(IAsyncResult result)
 {
@@ -143,16 +148,62 @@ private void OnReceivedData(IAsyncResult result)
 }
 ```
 
-UserSocket객체는 클라이언트로부터 패킷을 응답(Response)받아 
+클라이언트로부터 받은 패킷은 
 [UserConnection](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/User/UserConnection/UserConnection.cs)에게 넘기고
 
 ```csharp
-//  UserConnection.cs
+//  UserConnection.cs -> line: 40
 
 public void EnqueuePacket(GNPacket packet)
 {
     _userManager.EnqueueProc(this, packet);
 }
+
+//  UserManager.cs -> line: 41
+
+public void EnqueueProc(UserConnection conn, GNPacket packet)
+{
+    lock (_procQueue)
+    {
+        var process = new UserProccess
+        {
+            Connection = conn,
+            Packet = packet,
+        };
+        _procQueue.Enqueue(process);
+    }
+}
 ```
 
-UserConnection은 넘겨받은 패킷의 처리(Process)를 UserManager의 프로세스 큐(Process Queue)에 추가합니다.
+UserConnection은 넘겨받은 패킷의 처리(Process)를 [UserManager](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/User/UserManager.cs)의 
+프로세스 큐(Process Queue)에 추가합니다.
+
+```csharp
+//  UserManager.cs -> line: 54
+
+public void HandlePacket()
+{
+    try
+    {
+        lock (_procQueue)
+        {
+            if (_procQueue.Count > 0)
+            {
+                var process = _procQueue.Dequeue();
+                process.Connection.ProcPacket(process.Packet);
+            }
+        }
+    }
+    catch (Exception exception)
+    {
+        _logger.Error(exception);
+    }
+}
+```
+
+프로세스 큐는 메인 스레드에서 GameManager가 __HandlePacket__ 메서드를 호출하여 프로세스를 하나씩 처리합니다.
+
+```
+
+
+```
