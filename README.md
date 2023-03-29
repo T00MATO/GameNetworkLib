@@ -598,7 +598,7 @@ RoomManager의 워커 스레드들은 GameManager가 **RunWorkers** 메서드를
 
 각각 워커 스레드에 할당되어 있는 워커(Worker)들은 해당 작업 풀에 있는 모든 서브루틴(메세지 처리 메서드)의 진행도를 확인합니다.
 
-서브루틴의 진행이 완료되었다면 해당 메세지 처리 작업을 작업 풀에서 제거하며합니다.
+서브루틴의 진행이 완료되었다면 해당 메세지 처리 작업을 작업 풀에서 제거합니다.
 
 완료하지 못했을 경우 [IRMCondition](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Room/RoomMessage/RMConditions.cs)의 
 조건에 따라 서브루틴은 대기합니다.
