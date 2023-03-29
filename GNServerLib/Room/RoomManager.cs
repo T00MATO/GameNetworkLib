@@ -57,8 +57,8 @@ namespace GNServerLib.Room
         {
             lock (_procQueue)
             {
-                var procUnit = new RoomProccess(room, message);
-                _procQueue.Enqueue(procUnit);
+                var process = new RoomProccess(room, message);
+                _procQueue.Enqueue(process);
             }
         }
 
@@ -70,9 +70,9 @@ namespace GNServerLib.Room
                 {
                     if (_procQueue.Count > 0)
                     {
-                        var procUnit = _procQueue.Dequeue();
-                        var process = procUnit.Room.HandleMessage(procUnit.Message);
-                        var procWork = new RoomWork(procUnit.Room, process);
+                        var process = _procQueue.Dequeue();
+                        var subRoutine = process.Room.HandleMessage(process.Message);
+                        var procWork = new RoomWork(process.Room, subRoutine);
                         LoadBalanceWork(procWork);
                     }
                 }
