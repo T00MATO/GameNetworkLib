@@ -45,7 +45,7 @@
     <Compile Include="Room\RoomMessage\RoomMessage.cs" />
     <Compile Include="Room\RoomStates.cs" />
     <Compile Include="Room\RoomWork.cs" />
-    <Compile Include="Utils\YieldConditions.cs" />
+    <Compile Include="Room\RoomMessage\RMConditions.cs" />
     <Compile Include="SubManager.cs" />
     <Compile Include="Match\MatchManager.cs" />
     <Compile Include="Room\RoomInfo\RoomInfo.cs" />
