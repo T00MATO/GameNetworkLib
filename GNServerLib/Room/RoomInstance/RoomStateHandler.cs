@@ -5,30 +5,17 @@ namespace GNServerLib.Room
 {
     internal partial class RoomInstance
     {
-        private IEnumerator HandleState(RM_UpdateStatus message)
-        {
-            switch (message.State)
-            {
-                case GameStates.Prepare:
-                    return OnPrepareState();
-                case GameStates.Start:
-                    return OnStartState();
-                default:
-                    throw new Exception($"Can not handle a state message! : {message}");
-            }
-        }
-
         private IEnumerator OnStatement(RM_UpdateStatus message)
         {
             Info.BeginHandleState();
             Info.SetGameState(message.State);
-            
+
             _logger.Info($"Room({RoomIdTag}) game state is {message.State}.");
 
             try
             {
-                var work =  HandleState(message);
-                
+                var work = HandleState(message);
+
                 while (work.MoveNext())
                 {
                     if (work.Current == null)
@@ -49,6 +36,19 @@ namespace GNServerLib.Room
             }
 
             yield return null;
+        }
+
+        private IEnumerator HandleState(RM_UpdateStatus message)
+        {
+            switch (message.State)
+            {
+                case GameStates.Prepare:
+                    return OnPrepareState();
+                case GameStates.Start:
+                    return OnStartState();
+                default:
+                    throw new Exception($"Can not handle a state message! : {message}");
+            }
         }
 
         private IEnumerator OnPrepareState()
