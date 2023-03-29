@@ -242,7 +242,7 @@ public void ProcPacket(GNPacket packet)
 }
 ```
 
-ProcPacket 메서드는 패킷([GNPacket](https://github.com/T00MATO/GameNetworkLib/blob/master/GNPacketLib/GNPacket.cs))의 유형에 따라 각자 다르게 처리합니다.
+ProcPacket 메서드는 패킷([GNPacket](https://github.com/T00MATO/GameNetworkLib/blob/master/GNPacketLib/GNPacket.cs))의 유형에 따라 각 다르게 처리합니다.
 
 ```csharp
 //  UserConnection.cs -> line: 78
@@ -391,4 +391,8 @@ private void MatchConnections()
 }
 ```
 
+UserConnection 대기 리스트는 메인 스레드에서 GameManager가 **HandleMatch** 메서드를 호출하여 매치를 하나씩 처리하며,
 
+매치메이킹이 될때마다 Request가 **GNP_Match.REQUESTS.SUCCESS** 인 **GNP_Match** 패킷을 매치메이킹된 유저들에게 보냅니다.
+
+그 후, 매치 메이킹이 된 유저들을 바탕으로 [RoomManager](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Room/RoomManager.cs)에서 방을 생성합니다.
