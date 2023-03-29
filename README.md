@@ -594,7 +594,7 @@ private bool IsWorkDone(RoomWork work)
 
 RoomManager의 작업 풀(Work Pool)은 총 4개가 존재하고 그 작업 풀들 각각 처리하는 4개의 워커 스레드(Worker Thread)들이 있습니다.
 
-RoomManager의 워커 스레드들은 GameManager가 **RunWorkers** 메서드를 호출하여 스레드들의 메세지 처리 업무(**HandleWork** 메서드)를 진행합니다.
+RoomManager의 워커 스레드들은 GameManager가 **RunWorkers** 메서드를 호출하여 스레드들의 메세지 처리 업무를 진행합니다.
 
 각각 워커 스레드에 할당되어 있는 워커(Worker)들은 해당 작업 풀에 있는 모든 서브루틴(메세지 처리 메서드)의 진행도를 확인합니다.
 
