@@ -277,3 +277,46 @@ private void OnSendedData(IAsyncResult result)
 
 UserConnection의 **SendPacket** 메서드를 통해 연결된 클라이언트에 패킷을 전달할 수 있습니다.
 
+## [MatchManager](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Match/MatchManager.cs)
+
+```
+//  UserHandler.cs -> line: 41
+
+private void OnMatch(GNP_Match p)
+{
+    switch (p.Request)
+    {
+        case GNP_Match.REQUESTS.START:
+        {
+            Info.StartMatch();
+            _matchManager.AddConnection(this);
+            _logger.Info($"{Info.Username} started to wait for a match making.");
+        }
+        break;
+        case GNP_Match.REQUESTS.CANCEL:
+        {
+            Info.CancelMatch();
+            _matchManager.RemoveConnection(Uid);
+            _logger.Info($"{Info.Username} canceled to wait for a match making.");
+        }
+        break;
+        case GNP_Match.REQUESTS.SUCCESS:
+        {
+            _logger.Info($"{Info.Username} has been succeed match making.");
+        }
+        break;
+        default:
+        {
+            throw new Exception($"Can not process request! : {p.Request}");
+        }
+    }
+
+    var requestIdx = (byte)p.Request;
+    var result = new GNP_MatchRes((GNP_MatchRes.RESULTS)requestIdx);
+
+    SendPacket(result);
+}
+```
+
+[UserHandler](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/User/UserConnection/UserHandlers.cs)의 **OnMatch** 메서드는 
+클라이언트로부터 GNP_Match 패킷([GNPacket](https://github.com/T00MATO/GameNetworkLib/blob/master/GNPacketLib/GNPacket.cs))을 받아 처리하는 메서드입니다.
