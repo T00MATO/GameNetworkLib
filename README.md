@@ -433,3 +433,52 @@ UserManager는 [MatchManager](https://github.com/T00MATO/GameNetworkLib/blob/mas
 
 RoomInstance는 생성될 때 RoomManager에게 
 **RM_Create(방 생성)** 메세지([RoomMessage](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Room/RoomMessage/RoomMessage.cs))를 보냅니다.
+
+```csharp
+//  RoomInstance.cs -> line: 36
+
+public void EnqueueMessage(RoomMessage message)
+{
+    _roomManager.EnqueueProc(this, message);
+}
+
+//  RoomManager.cs -> line: 56
+
+public void EnqueueProc(RoomInstance room, RoomMessage message)
+{
+    lock (_procQueue)
+    {
+        var process = new RoomProccess(room, message);
+        _procQueue.Enqueue(process);
+    }
+}
+```
+
+보내진 방 메세지는 RoomManager의 프로세스 대기 큐(Process Queue)에 추가됩니다.
+
+```
+//  RoomInstance.cs -> line: 65
+
+public void HandleMessage()
+{
+    try
+    {
+        lock (_procQueue)
+        {
+            if (_procQueue.Count > 0)
+            {
+                var process = _procQueue.Dequeue();
+                var subRoutine = process.Room.HandleMessage(process.Message);
+                var procWork = new RoomWork(process.Room, subRoutine);
+                LoadBalanceWork(procWork);
+            }
+        }
+    }
+    catch (Exception exception)
+    {
+        _logger.Error(exception);
+    }
+}
+```
+
+RoomManager의 프로세스 대기 큐는 메인 스레드에서 GameManager가 **HandleMessage** 메서드를 호출하여 메세지를 하나씩 처리하며,
