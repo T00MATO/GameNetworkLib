@@ -115,7 +115,7 @@ public UserSocket(Socket socket)
 }
 ```
 
-UserSocekt객체는 생성될때부터 패킷받기를 시작합니다.
+UserSocekt객체는 생성될때부터 패킷 받기를 시작합니다.
 
 ```csharp
 //  UserSocket.cs -> line: 37
@@ -201,9 +201,79 @@ public void HandlePacket()
 }
 ```
 
-프로세스 큐는 메인 스레드에서 GameManager가 __HandlePacket__ 메서드를 호출하여 프로세스를 하나씩 처리합니다.
+프로세스 큐는 메인 스레드에서 GameManager가 **HandlePacket** 메서드를 호출하여 프로세스를 하나씩 처리하며,
 
+UserConnection의 **ProcPacket** 메서드로 패킷을 처리합니다.
+
+```csharp
+//  UserConnection -> line: 45
+
+public void ProcPacket(GNPacket packet)
+{
+    switch (packet)
+    {
+        case GNP_Connect p:
+            OnConnected(p);
+            break;
+        case GNP_Disconnect p:
+            OnDisconnected(p);
+            break;
+        case GNP_Login p:
+            OnLogin(p);
+            break;
+        case GNP_Match p:
+            OnMatch(p);
+            break;
+        case GNP_RoomCreate p:
+            OnRoomCreate(p);
+            break;
+        case GNP_UserJoin p:
+            OnUserJoin(p);
+            break;
+        case GNP_UserExit p:
+            OnUserExit(p);
+            break;
+        case GNP_RoomInfo p:
+            OnRoomInfo(p);
+            break;
+        default:
+            throw new Exception($"Can not process packet! : {packet}");
+    }
+}
 ```
 
+ProcPacket 메서드는 패킷([GNPacket](https://github.com/T00MATO/GameNetworkLib/blob/master/GNPacketLib/GNPacket.cs))의 유형에 따라 각자 다르게 처리합니다.
 
+```csharp
+//  UserConnection.cs -> line: 78
+
+public void SendPacket(GNPacket packet)
+{
+    lock (_socket)
+        _socket.SendData(packet.ToBytes());
+}
+
+//  UserSocket.cs -> line: 64
+
+public void SendData(byte[] dataBytes)
+{
+    _socket?.BeginSend(dataBytes, 0, dataBytes.Length, SocketFlags.None, OnSendedData, null);
+}
+
+private void OnSendedData(IAsyncResult result)
+{
+    try
+    {
+        var dataBytes = _socket.EndSend(result, out var error);
+
+        GNPacket.CheckDataBytes(dataBytes, error);
+    }
+    catch (Exception exception)
+    {
+        _logger.Error(exception);
+    }
+}
 ```
+
+UserConnection의 **SendPacket** 메서드를 통해 연결된 클라이언트에 패킷을 전달할 수 있습니다.
+
