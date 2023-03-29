@@ -242,7 +242,7 @@ public void ProcPacket(GNPacket packet)
 }
 ```
 
-ProcPacket 메서드는 패킷([GNPacket](https://github.com/T00MATO/GameNetworkLib/blob/master/GNPacketLib/GNPacket.cs))의 유형에 따라 각 다르게 처리합니다.
+ProcPacket 메서드는 패킷([GNPacket](https://github.com/T00MATO/GameNetworkLib/blob/master/GNPacketLib/GNPacket.cs))의 유형에 따라 각각 다르게 처리합니다.
 
 ```csharp
 //  UserConnection.cs -> line: 78
