@@ -277,7 +277,7 @@ private void OnSendedData(IAsyncResult result)
 
 UserConnection의 **SendPacket** 메서드를 통해 연결된 클라이언트에 패킷을 전달할 수 있습니다.
 
-### UserConnection의 UserInfo
+### [UserInfo](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/User/UserInfo/UserInfo.cs) 
 
 ```csharp
 //  UserInfo.cs -> line: 7
@@ -299,8 +299,7 @@ public static UserInfo Create()
 }
 ```
 
-UserConnection 객체는 유저의 데이터를 지니고 있는 [UserInfo](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/User/UserInfo/UserInfo.cs) 
-구조체를 지니고 있습니다.
+UserInfo는 유저의 데이터를 지니고 있는 구조체입니다.
 
 ```csharp
 //  UserInfoHandler.cs -> line: 8
@@ -343,8 +342,8 @@ public void SetRoom(RoomInstance room)
 ...
 ```
 
-이 UserInfo 구조체는 외부에서는 읽기만 가능하며, 내부 데이터를 수정하려면 [UserInfoHandler](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/User/UserInfo/UserInfoHandler.cs)에 
-있는 처리 메서드를 호출해야 합니다.
+외부에서는 읽기만 가능하며, 내부 데이터를 수정하려면 
+[UserInfoHandler](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/User/UserInfo/UserInfoHandler.cs)의 처리 메서드를 호출해야 합니다.
 
 UserInfoHandler의 처리 메서드들은 데이터를 갱신할 때 유저의 상태들을 고려하여 갱신합니다.
 
@@ -673,3 +672,63 @@ RoomManager의 워커 스레드들은 GameManager가 **RunWorkers** 메서드를
 
 완료하지 못했을 경우 [IRMCondition](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Room/RoomMessage/RMConditions.cs)의 
 조건에 따라 서브루틴은 대기합니다.
+
+### [RoomInfo](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Room/RoomInfo/RoomInfo.cs)
+
+```csharp
+//  RoomInfo.cs -> line: 8
+
+public static readonly int MAX_USER = 2;
+
+private Dictionary<ulong, UserConnection> _connections;
+
+public RoomStates RoomState { get; private set; }
+public GameStates GameState { get; private set; }
+public bool HandlingStatement { get; private set; }
+
+public static RoomInfo Create(Dictionary<ulong, UserConnection> conns)
+{
+    return new RoomInfo
+    {
+        _connections = conns,
+        RoomState = RoomStates.Creating,
+        GameState = GameStates.None,
+        HandlingStatement = false,
+    };
+}
+```
+
+RoomInfo느 방의 데이터를 지니고 있는 구조체입니다.
+
+```csharp
+//  RoomInfoHandler.cs -> line: 9
+
+public void BroadcastPacket(GNPacket packet)
+{
+    foreach (var conn in _connections.Values)
+        conn.EnqueuePacket(packet);
+}
+
+public void BroadcastPacket(GNPacket packet, Func<UserInfo, bool> condition)
+{
+    foreach (var conn in _connections.Values)
+    {
+        if (condition(conn.Info))
+            conn.EnqueuePacket(packet);
+    }
+}
+
+public void Created(RoomInstance room)
+{
+    foreach (var conn in _connections.Values)
+        conn.Info.SetRoom(room);
+
+    RoomState = RoomStates.Created;
+}
+...
+```
+
+외부에서는 읽기만 가능하며, 내부 데이터를 수정하려면 
+[RoomInfoHandler](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Room/RoomInfo/RoomInfoHandler.cs)의 처리 메서드를 호출해야 합니다.
+
+RoomInfoHandler의 처리 메서드들은 데이터를 갱신할 때 방의 상태들을 고려하여 갱신합니다.
