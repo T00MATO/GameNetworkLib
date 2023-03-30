@@ -277,6 +277,77 @@ private void OnSendedData(IAsyncResult result)
 
 UserConnection의 **SendPacket** 메서드를 통해 연결된 클라이언트에 패킷을 전달할 수 있습니다.
 
+### UserConnection의 UserInfo
+
+```csharp
+//  UserInfo.cs -> line: 7
+
+public string Username { get; private set; }
+public bool Matching { get; private set; }
+public bool Joined { get; private set; }
+public RoomInstance CurrentRoom { get; private set; }
+
+public static UserInfo Create()
+{
+    return new UserInfo
+    {
+        Username = string.Empty,
+        Matching = false,
+        Joined = false,
+        CurrentRoom = null,
+    };
+}
+```
+
+UserConnection 객체는 유저의 데이터를 지니고 있는 [UserInfo](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/User/UserInfo/UserInfo.cs) 
+구조체를 지니고 있습니다.
+
+```csharp
+//  UserInfoHandler.cs -> line: 8
+
+public void SetUsername(string name)
+{
+    if (Username != string.Empty)
+        throw new Exception($"{nameof(Username)} is already setted.");
+
+    Username = name;
+}
+
+public void StartMatch()
+{
+    if (Joined)
+        throw new Exception("Can not start a match while in the room.");
+
+    Matching = true;
+}
+
+public void CancelMatch()
+{
+    if (Joined)
+        throw new Exception("Can not cancel a match while in the room.");
+
+    Matching = false;
+}
+
+public void SetRoom(RoomInstance room)
+{
+    if (CurrentRoom != null)
+        throw new Exception($"{nameof(CurrentRoom)} is already setted.");
+
+    if (Joined)
+        throw new Exception("Can not set a room when user is already joined a room.");
+
+    CurrentRoom = room;
+}
+
+...
+```
+
+이 UserInfo 구조체는 외부에서는 읽기만 가능하며, 내부 데이터를 수정하려면 [UserInfoHandler](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/User/UserInfo/UserInfoHandler.cs)에 
+있는 처리 메서드를 호출해야 합니다.
+
+UserInfoHandler의 처리 메서드들은 데이터를 갱신할 때 유저의 상태들을 고려하여 갱신합니다.
+
 ## [MatchManager](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Match/MatchManager.cs)
 
 ```csharp
