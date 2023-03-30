@@ -49,11 +49,11 @@
     <Compile Include="SubManager.cs" />
     <Compile Include="Match\MatchManager.cs" />
     <Compile Include="Room\RoomInfo\RoomInfo.cs" />
-    <Compile Include="Room\RoomInfo\RoomInfoHandlers.cs" />
+    <Compile Include="Room\RoomInfo\RoomInfoHandler.cs" />
     <Compile Include="Room\RoomInstance\RoomHandlers.cs" />
     <Compile Include="Room\RoomInstance\RoomStateHandler.cs" />
     <Compile Include="Room\RoomProcess.cs" />
-    <Compile Include="User\UserInfo\UserInfoHandlers.cs" />
+    <Compile Include="User\UserInfo\UserInfoHandler.cs" />
     <Compile Include="User\UserConnection\UserHandlers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameManager.cs" />
