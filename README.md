@@ -735,6 +735,6 @@ RoomInfoHandler의 처리 메서드들은 데이터를 갱신할 때 방의 상�
 
 # [GNClientLib](https://github.com/T00MATO/GameNetworkLib/tree/master/GNClientLib)
 
-게임 서버와 통신하는 클라이언트의 라이브러리
+게임 서버와 통신하는 클라이언트의 라이브러리입니다.
 
 
