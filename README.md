@@ -732,3 +732,9 @@ public void Created(RoomInstance room)
 [RoomInfoHandler](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/Room/RoomInfo/RoomInfoHandler.cs)의 처리 메서드를 호출해야 합니다.
 
 RoomInfoHandler의 처리 메서드들은 데이터를 갱신할 때 방의 상태들을 고려하여 갱신합니다.
+
+# [GNClientLib](https://github.com/T00MATO/GameNetworkLib/tree/master/GNClientLib)
+
+GNServerLib을 기반으로한 서버와 통신하기 위한 클라이언트 네트워크 라이브러리
+
+
