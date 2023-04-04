@@ -696,7 +696,7 @@ public static RoomInfo Create(Dictionary<ulong, UserConnection> conns)
 }
 ```
 
-RoomInfo느 방의 데이터를 지니고 있는 구조체입니다.
+RoomInfo는 방의 데이터를 지니고 있는 구조체입니다.
 
 ```csharp
 //  RoomInfoHandler.cs -> line: 9
