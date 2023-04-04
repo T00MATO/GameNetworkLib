@@ -735,6 +735,115 @@ RoomInfoHandler의 처리 메서드들은 데이터를 갱신할 때 방의 상�
 
 게임 서버와 통신하는 클라이언트의 라이브러리입니다.
 
+```csharp
+//  Client.cs -> line: 7
+
+public static class Client
+{
+    private static ClientBehaviour _client => ClientBehaviour.Instance;
+
+    public static void ConnectToServer(string ip, ushort port) => _client.ConnectToServer(ip, port);
+
+    public static void SendPacket(GNPacket packet) => _client.SendPacket(packet);
+
+    public static void SendAndReceive<T>(GNPacket packet, Action<T> recvProc) where T : GNPacket => _client.SendAndReceive(packet, recvProc);
+
+    public static void Subscribe(NetworkBehaviour network) => _client.Subscribe(network);
+
+    public static void Describe(NetworkBehaviour network) => _client.Describe(network);
+}
+```
+
+클라이언트 어플리케이션에서 정적 클래스인 [Client](https://github.com/T00MATO/GameNetworkLib/blob/master/GNClientLib/Client.cs)의 메서드를 호출하여 서버와 통신할 수 있습니다.
+
+```csharp
+//  NetworkBehaviour.cs -> line: 7
+
+public abstract class NetworkBehaviour : MonoBehaviour
+{
+    public abstract void OnPacketReceived(GNPacket packet);
+
+    protected void BeginPacketReceive() => Client.Subscribe(this);
+
+    protected void EndPacketReceive() => Client.Describe(this);
+
+    protected void ConnectToServer(string ip, ushort port) => Client.ConnectToServer(ip, port);
+
+    protected void SendPacket(GNPacket packet) => Client.SendPacket(packet);
+
+    protected void SendAndReceive<T>(GNPacket packet, Action<T> recvProc) where T : GNPacket => Client.SendAndReceive<T>(packet, recvProc);
+}
+```
+
+[NetworkBehaviour](https://github.com/T00MATO/GameNetworkLib/blob/master/GNClientLib/NetworkBehaviour.cs)는 Client 메서드를 내부적으로 호출해주는 
+추상 클래스입니다.
+
+```csharp
+//  GameNetworkApplication.sln -> LoginBehaviour.cs -> line: 16
+
+private void Awake()
+{
+    BeginPacketReceive();
+}
+
+private void Start()
+{
+    ConnectToServer(ServerSetting.REMOTE_IP, ServerSetting.REMOTE_PORT);
+}
+
+public override void OnPacketReceived(GNPacket packet)
+{
+    switch (packet)
+    {
+        case GNP_Connect p:
+            OnConnected(p);
+            break;
+        default:
+            Debug.LogError($"Can not process packet: {packet}");
+            break;
+    }
+}
+```
+
+NetworkBehaviour를 상속받은 컴포넌트는 **BeginPacketReceive** 메서드를 호출하여 서버로부터 패킷 받기를 시작할 수 있습니다.
+
+**ConnectToServer** 에 서버의 ip와 포트를 입력해 서버와 연결할 수 있습니다.
+
+NetworkBehaviour의 **OnPacketReceived(GNPacket packet)** 메서드를 상속받아 서버로부터 받은 패킷을 처리할 수 있습니다.
+
+```csharp
+//  GameNetworkApplication.sln -> LoginBehaviour.cs -> line: 16
+public void Login()
+{
+    if (_usernameField.text == string.Empty)
+        return;
+
+    _usernameField.interactable = false;
+    _loginButton.interactable = false;
+
+    var packet = new GNP_Login(_usernameField.text);
+
+    SendAndReceive<GNP_LoginRes>(packet, response =>
+    {
+        if (response.Result != GNP_LoginRes.RESULTS.SUCCESS)
+        {
+            Debug.LogWarning("Fail to login.");
+            return;
+        }
+
+        Oneself.LoginSuccess(response.Uid, response.Username);
+
+        EndPacketReceive();
+
+        ExtendedManager.LoadScene(SceneKey.LOBBY);
+
+        Debug.Log("Successfully logined.");
+    });
+}
+```
+
+**SendAndReceive** 메서드를 통해 [GNPacketLib](https://github.com/T00MATO/GameNetworkLib/tree/master/GNPacketLib) 라이브러리의 패킷을 서버로부터 보내고, 응답 받았을 때 패킷을 처리할 수 있습니다.
+
 해당 라이브러리를 활용하여 만든 클라이언트 어플리케이션은 **[GameNetworkApplication](https://github.com/T00MATO/GameNetworkApplication)** 를 참고해주세요.
 
 # [GNPacketLib](https://github.com/T00MATO/GameNetworkLib/tree/master/GNPacketLib)
