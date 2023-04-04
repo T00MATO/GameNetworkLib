@@ -1,6 +1,6 @@
 # GameNetworkLib
 
-[C#](https://learn.microsoft.com/ko-kr/dotnet/csharp/tour-of-csharp/)에 기반한 게임 개발용 라이브러리입니다.
+[C#](https://learn.microsoft.com/ko-kr/dotnet/csharp/tour-of-csharp/)에 기반한 게임 서버/클라이언트 개발용 라이브러리입니다.
 
 # [GNCore](https://github.com/T00MATO/GameNetworkLib/tree/master/GNCore)
 
