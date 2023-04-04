@@ -737,6 +737,8 @@ RoomInfoHandler의 처리 메서드들은 데이터를 갱신할 때 방의 상�
 
 게임 서버와 통신하는 클라이언트의 라이브러리입니다.
 
+
+
 # [GNPacketLib](https://github.com/T00MATO/GameNetworkLib/tree/master/GNPacketLib)
 
 게임 서버와 클라이언트가 통신하는 패킷 라이브러리입니다.
@@ -780,7 +782,7 @@ public static GNPacket FromBytes(byte[] dataBytes, int bytesLength)
 **ToBytes** 메서드로 패킷 객체를 바이너리로, FromBytes 메서드로 바이너리를 패킷 객체로 변환합니다.
 
 ```csharp
-//  GNPs.cs -> 
+//  GNPs.cs -> line: 5
 
 [Serializable]
 public class GNP_Connect : GNPacket
@@ -825,6 +827,7 @@ public class GNP_LoginRes : GNPacket
         Username = username;
     }
 }
+...
 ```
 
 GNPacket을 상속받는 패킷들은 다음과 같은 형태로 구성합니다.
