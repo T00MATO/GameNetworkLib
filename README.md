@@ -737,4 +737,94 @@ RoomInfoHandler의 처리 메서드들은 데이터를 갱신할 때 방의 상�
 
 게임 서버와 통신하는 클라이언트의 라이브러리입니다.
 
+# [GNPacketLib](https://github.com/T00MATO/GameNetworkLib/tree/master/GNPacketLib)
 
+게임 서버와 클라이언트가 통신하는 패킷 라이브러리입니다.
+
+```csharp
+//  GNPacket.cs -> line: 11
+
+public static readonly int SEND_BUFFER_SIZE = (int)SocketOptionName.SendBuffer;
+public static readonly int RECV_BUFFER_SIZE = (int)SocketOptionName.ReceiveBuffer;
+
+public static readonly BinaryFormatter _binaryFormatter = new BinaryFormatter();
+
+public static void CheckDataBytes(int bytesLength, SocketError error)
+{
+    if (bytesLength == 0 || error != SocketError.Success)
+        throw new SocketException();
+}
+
+public byte[] ToBytes() => ToBytes(this);
+
+public static byte[] ToBytes(GNPacket packet)
+{
+    using (var stream = new MemoryStream())
+    {
+        _binaryFormatter.Serialize(stream, packet);
+        return stream.ToArray();
+    }
+}
+
+public static GNPacket FromBytes(byte[] dataBytes, int bytesLength)
+{
+    using (var stream = new MemoryStream(dataBytes, 0, bytesLength))
+    {
+        return (GNPacket)_binaryFormatter.Deserialize(stream);
+    }
+}
+```
+
+[GNPacket](https://github.com/T00MATO/GameNetworkLib/blob/master/GNPacketLib/GNPacket.cs)은 모든 패킷들의 토대가 되는 추상 클래스입니다.
+
+**ToBytes** 메서드로 패킷 객체를 바이너리로, FromBytes 메서드로 바이너리를 패킷 객체로 변환합니다.
+
+```csharp
+//  GNPs.cs -> 
+
+[Serializable]
+public class GNP_Connect : GNPacket
+{
+}
+
+[Serializable]
+public class GNP_Disconnect : GNPacket
+{
+}
+
+[Serializable]
+public class GNP_Login : GNPacket
+{
+    public string Username;
+
+    public GNP_Login(string username)
+    {
+        Username = username;
+    }
+}
+
+[Serializable]
+public class GNP_LoginRes : GNPacket
+{
+    public enum RESULTS : byte
+    {
+        NONE,
+        SUCCESS,
+        FAILURE,
+    }
+
+    public RESULTS Result;
+
+    public ulong Uid;
+    public string Username;
+
+    public GNP_LoginRes(RESULTS result, ulong uid, string username)
+    {
+        Result = result;
+        Uid = uid;
+        Username = username;
+    }
+}
+```
+
+GNPacket을 상속받는 패킷들은 다음과 같은 형태로 구성합니다.
