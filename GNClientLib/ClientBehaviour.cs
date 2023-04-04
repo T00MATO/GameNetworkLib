@@ -30,7 +30,7 @@ namespace GNClientLib
         private ClientSocket _socket;
 
         private Queue<GNPacket> _packetQueue;
-        private NetworkBehaviour _handlingScene;
+        private NetworkBehaviour _currentNetwork;
 
         private Queue<Action<GNPacket>> _recvProcQueue;
 
@@ -83,18 +83,18 @@ namespace GNClientLib
             }
         }
 
-        internal void Subscribe(NetworkBehaviour scene)
+        internal void Subscribe(NetworkBehaviour network)
         {
-            if (_handlingScene)
+            if (_currentNetwork)
                 return;
 
-            _handlingScene = scene;
+            _currentNetwork = network;
         }
 
-        internal void Describe(NetworkBehaviour scene)
+        internal void Describe(NetworkBehaviour network)
         {
-            if (_handlingScene == scene)
-                _handlingScene = null;
+            if (_currentNetwork == network)
+                _currentNetwork = null;
         }
 
         private void Update()
@@ -117,9 +117,9 @@ namespace GNClientLib
                             }
                         }
 
-                        if (_handlingScene)
+                        if (_currentNetwork)
                         {
-                            _handlingScene.OnPacketReceived(packet);
+                            _currentNetwork.OnPacketReceived(packet);
                             _packetQueue.Dequeue();
                         }
                     }

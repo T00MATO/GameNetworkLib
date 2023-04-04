@@ -14,8 +14,8 @@ namespace GNClientLib
         
         public static void SendAndReceive<T>(GNPacket packet, Action<T> recvProc) where T : GNPacket => _client.SendAndReceive(packet, recvProc);
         
-        public static void Subscribe(NetworkBehaviour scene) => _client.Subscribe(scene);
+        public static void Subscribe(NetworkBehaviour network) => _client.Subscribe(network);
         
-        public static void Describe(NetworkBehaviour scene) => _client.Describe(scene);
+        public static void Describe(NetworkBehaviour network) => _client.Describe(network);
     }
 }
