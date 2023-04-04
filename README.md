@@ -844,6 +844,10 @@ public void Login()
 
 **SendAndReceive** 메서드를 통해 [GNPacketLib](https://github.com/T00MATO/GameNetworkLib/tree/master/GNPacketLib) 라이브러리의 패킷을 서버로부터 보내고, 응답 받았을 때 패킷을 처리할 수 있습니다.
 
+![image](https://user-images.githubusercontent.com/127966719/229708812-e7e80333-74af-40b7-b1f2-4f36e71830ec.png)
+
+서버와 통신한 기록은 유니티 에디터에 로그를 남겨 확인할 수 있습니다.
+
 해당 라이브러리를 활용하여 만든 클라이언트 어플리케이션은 **[GameNetworkApplication](https://github.com/T00MATO/GameNetworkApplication)** 를 참고해주세요.
 
 # [GNPacketLib](https://github.com/T00MATO/GameNetworkLib/tree/master/GNPacketLib)
