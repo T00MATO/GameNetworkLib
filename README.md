@@ -2,8 +2,6 @@
 
 [C#](https://learn.microsoft.com/ko-kr/dotnet/csharp/tour-of-csharp/)에 기반한 게임 개발용 라이브러리입니다.
 
-해당 라이브러리를 활용하여 만든 클라이언트 어플리케이션은 **[GameNetworkApplication](https://github.com/T00MATO/GameNetworkApplication)** 를 참고해주세요.
-
 # [GNCore](https://github.com/T00MATO/GameNetworkLib/tree/master/GNCore)
 
 **GNServerLib** 의 [ServerLauncher](https://github.com/T00MATO/GameNetworkLib/blob/master/GNServerLib/ServerLauncher.cs)를 구동시키는 솔루션입니다.
@@ -737,7 +735,7 @@ RoomInfoHandler의 처리 메서드들은 데이터를 갱신할 때 방의 상�
 
 게임 서버와 통신하는 클라이언트의 라이브러리입니다.
 
-
+해당 라이브러리를 활용하여 만든 클라이언트 어플리케이션은 **[GameNetworkApplication](https://github.com/T00MATO/GameNetworkApplication)** 를 참고해주세요.
 
 # [GNPacketLib](https://github.com/T00MATO/GameNetworkLib/tree/master/GNPacketLib)
 
