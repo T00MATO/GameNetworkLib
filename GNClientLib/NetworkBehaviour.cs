@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GNClientLib
 {
-    public abstract class SceneBehaviour : MonoBehaviour
+    public abstract class NetworkBehaviour : MonoBehaviour
     {
         public abstract void OnPacketReceived(GNPacket packet);
 

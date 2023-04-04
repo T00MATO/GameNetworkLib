@@ -30,7 +30,7 @@ namespace GNClientLib
         private ClientSocket _socket;
 
         private Queue<GNPacket> _packetQueue;
-        private SceneBehaviour _handlingScene;
+        private NetworkBehaviour _handlingScene;
 
         private Queue<Action<GNPacket>> _recvProcQueue;
 
@@ -83,7 +83,7 @@ namespace GNClientLib
             }
         }
 
-        internal void Subscribe(SceneBehaviour scene)
+        internal void Subscribe(NetworkBehaviour scene)
         {
             if (_handlingScene)
                 return;
@@ -91,7 +91,7 @@ namespace GNClientLib
             _handlingScene = scene;
         }
 
-        internal void Describe(SceneBehaviour scene)
+        internal void Describe(NetworkBehaviour scene)
         {
             if (_handlingScene == scene)
                 _handlingScene = null;

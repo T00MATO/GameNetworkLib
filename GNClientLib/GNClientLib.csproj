@@ -39,7 +39,7 @@
     <Compile Include="Client.cs" />
     <Compile Include="ClientBehaviour.cs" />
     <Compile Include="ClientSocket.cs" />
-    <Compile Include="SceneBehaviour.cs" />
+    <Compile Include="NetworkBehaviour.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
